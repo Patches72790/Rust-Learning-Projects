@@ -1,20 +1,24 @@
 mod front_of_house;
+use front_of_house::{hosting, serving};
 
-pub fn eat_at_restaurant() {
-    // absolute path
-//    use crate::front_of_house::hosting;
-    // relative path 
-//    use front_of_house::hosting;
-//    hosting::add_to_waitlist();
+pub mod restaurant_stuff {
+    pub fn eat_at_restaurant() {
+        // absolute path
+        //    use crate::front_of_house::hosting;
+        // relative path
+        //    use front_of_house::hosting;
+        //    hosting::add_to_waitlist();
 
-    let mut meal = back_of_house::Breakfast::summer("Rye");
-    meal.toast = String::from("Wheat");
-    println!("I'd like {} toast please", meal.toast);
-//     meal.seasonal_fruit = String::from("blueberries");
+        super::hosting::add_to_waitlist();
+        super::hosting::seat_at_table();
 
+        let mut meal = super::back_of_house::Breakfast::summer("Rye");
+        meal.toast = String::from("Wheat");
+        println!("I'd like {} toast please", meal.toast);
+
+        super::back_of_house::cook_order();
+    }
 }
-
-fn serve_order() {}
 
 mod back_of_house {
     pub struct Breakfast {
@@ -28,26 +32,20 @@ mod back_of_house {
     }
     impl Breakfast {
         pub fn summer(toast: &str) -> Breakfast {
-            Breakfast { toast: String::from(toast), seasonal_fruit: String::from("peaches") }   
+            Breakfast {
+                toast: String::from(toast),
+                seasonal_fruit: String::from("peaches"),
+            }
         }
     }
-    
 
     fn fix_incorrect_order() {
         cook_order();
         // super corresponds to '..' in file system
         // references parent scope (here 'crate')
-        super::serve_order();
+        super::serving::serve_order();
     }
-    fn cook_order() {}
-}
-
-
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    pub fn cook_order() {
+        println!("Order up!");
     }
 }

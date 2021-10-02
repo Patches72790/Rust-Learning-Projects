@@ -1,13 +1,17 @@
 pub mod hosting {
-    pub fn add_to_waitlist() {}
+    pub fn add_to_waitlist() {
+        println!("Added to WaitList!");
+    }
 
-    fn seat_at_table() {}
+    pub fn seat_at_table() {
+        println!("You are now seated");
+    }
 }
 
-mod serving {
-    fn take_order() {}
+pub mod serving {
+    pub fn take_order() {}
 
-    fn serve_order() {}
+    pub fn serve_order() {}
 
-    fn take_payment() {}
+    pub fn take_payment() {}
 }
