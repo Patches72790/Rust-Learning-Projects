@@ -1,23 +1,35 @@
 pub fn multiply_matrix(m1: Vec<Vec<i32>>, m2: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-    let mut multiplied: Vec<Vec<i32>> = vec![vec![0; m1.len()]; m1.len()];
-    let mut i = 0;
-    let mut j = 0;
-    let mut k = 0;
+    if m1[0].len() != m2.len() {
+        panic!("Matrix 1 columns must be equal to matrix 2 rows!");
+    }
 
-    while i < m1.len() {
-        while j < m1.len() {
-            while k < m1[j].len() {
-                multiplied[i][j] = m1[i][j] * m2[j][k];
-                k = k + 1;
+    let mut multiplied: Vec<Vec<i32>> = vec![vec![0; m2[0].len()]; m1.len()];
+
+    for i in 0..m1.len() {
+        for j in 0..m1[0].len() {
+            for k in 0..m2.len() {
+                multiplied[i][j] += m1[i][k] * m2[k][j];
             }
-            k = 0;
-            j = j + 1;
         }
-        j = 0;
-        i = i + 1;
     }
 
     return multiplied;
+}
+
+pub fn vector_matrix_multiply(v: Vec<i32>, m: Vec<Vec<i32>>) -> Vec<i32> {
+    if v.len() != m[0].len() {
+        panic!("Vector rows must equal matrix columns!");
+    }
+
+    let mut multiplied: Vec<i32> = vec![0; v.len()];
+
+    for i in 0..v.len() {
+        for j in 0..m[0].len() {
+            multiplied[i] += v[j] * m[j][i];
+        }
+    }
+
+    multiplied
 }
 
 pub fn print_matrix(m: Vec<Vec<i32>>) {
@@ -30,3 +42,4 @@ pub fn print_matrix(m: Vec<Vec<i32>>) {
     }
     println!();
 }
+
