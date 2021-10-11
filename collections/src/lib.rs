@@ -3,12 +3,14 @@ mod iter_stuff;
 mod string_stuff;
 mod hashmap_stuff;
 mod vector_stats;
+mod piglatin;
 
 pub use matrices::{multiply_matrix, print_matrix, vector_matrix_multiply};
 pub use iter_stuff::*;
 pub use string_stuff::*;
 pub use hashmap_stuff::*;
 pub use vector_stats::*;
+pub use piglatin::*;
 
 #[cfg(test)]
 mod tests {

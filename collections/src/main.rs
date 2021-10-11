@@ -1,4 +1,5 @@
 use collections::{make_spreadsheet, SpreadsheetCell, str_stuff, hashmap_me_bro, hashmap_from_vector, print_hashmap};
+use collections::piglatinify;
 
 fn main() {
     let spr = make_spreadsheet(); 
@@ -22,4 +23,7 @@ fn main() {
 
     print_hashmap(v_hm); 
     print_hashmap(my_hm);
+
+
+    piglatinify("abcdef".to_string());
 }
