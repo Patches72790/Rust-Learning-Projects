@@ -1,16 +1,95 @@
 pub use generic_stuff::{MyOption, MyResult, Point};
 
+pub mod largest_thing_list {
+    pub struct LargestThingList<T> {
+        t: Vec<T>,
+    }
+
+    impl<T: PartialOrd + Copy> LargestThingList<T> {
+        pub fn largest_copy(&self) -> T {
+            let mut largest = self.t[0];
+
+            for item in &self.t {
+                if item > &largest {
+                    largest = *item;
+                }
+            }
+            largest
+        }
+    }
+    impl<T: PartialOrd + Clone> LargestThingList<T> {
+        pub fn largest_clone(&self) -> T {
+            let mut largest = &self.t[0];
+
+            for item in &self.t {
+                if item > &largest {
+                    largest = item;
+                }
+            }
+            largest.clone()
+        }
+    }
+    impl<T: PartialOrd> LargestThingList<T> {
+        pub fn largest_no_clone_no_copy(&self) -> &T {
+            let mut largest = &self.t[0];
+
+            for item in &self.t {
+                if item > largest {
+                    largest = item;
+                }
+            }
+            largest
+        }
+    }
+}
+
+pub mod largest_thing {
+    pub fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
+        let mut largest = list[0];
+
+        for &item in list {
+            if item > largest {
+                largest = item;
+            }
+        }
+        largest
+    }
+    pub fn largest_clone<T: PartialOrd + Clone>(list: &[T]) -> T {
+        let mut largest = &list[0];
+
+        for item in list {
+            if item > &largest {
+                largest = item;
+            }
+        }
+        largest.clone()
+    }
+    pub fn largest_no_clone_no_copy<T: PartialOrd>(list: &[T]) -> &T {
+        let mut largest = &list[0];
+
+        for item in list {
+            if item > largest {
+                largest = item;
+            }
+        }
+        largest
+    }
+
+    pub fn largest_lifetimes<'a>(x: &'a str, y: &'a str) -> &'a str {
+        if x.len() > y.len() {
+            x
+        } else {
+            y
+        }
+    }
+
+    #[derive(Debug)]
+    pub struct ImportantExcerpt<'a> {
+        pub part: &'a str,
+    }
+}
+
 pub mod generic_stuff {
-    //    pub fn largest<T>(list: &[T]) -> T {
-    //        let mut largest = list[0];
-    //
-    //        for &item in list {
-    //            if item > largest {
-    //                largest = item;
-    //            }
-    //        }
-    //        largest
-    //    }
 
     #[derive(Debug)]
     pub struct Point<T> {
@@ -96,10 +175,4 @@ pub mod news {
             format!("{}: {}", self.username, self.content)
         }
     }
-
-    //    impl std::fmt::Display for Tweet {
-    //        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    //            ""
-    //        }
-    //    }
 }
