@@ -1,17 +1,21 @@
+use std::cmp::Eq;
 use std::collections::HashMap;
+use std::hash::Hash;
 use std::thread;
 use std::time::Duration;
 
-impl<T> Cacher<T>
+impl<T, U, V> Cacher<T, U, V>
 where
-    T: Fn(u32) -> u32,
+    T: Fn(U) -> V,
+    U: Eq + Hash + Copy,
+    V: Copy,
 {
-    fn new(calculation: T) -> Cacher<T> {
-        let value: HashMap<u32, u32> = HashMap::new();
+    fn new(calculation: T) -> Cacher<T, U, V> {
+        let value: HashMap<U, V> = HashMap::new();
         Cacher { calculation, value }
     }
 
-    fn value(&mut self, arg: u32) -> u32 {
+    fn value(&mut self, arg: U) -> V {
         let value = self.value.get(&arg);
         match value {
             Some(v) => *v,
@@ -24,12 +28,14 @@ where
     }
 }
 
-struct Cacher<T>
+struct Cacher<T, U, V>
 where
-    T: Fn(u32) -> u32,
+    T: Fn(U) -> V,
+    U: Eq + Hash + Copy,
+    V: Copy,
 {
     calculation: T,
-    value: HashMap<u32, u32>,
+    value: HashMap<U, V>,
 }
 
 fn generate_workout(intensity: u32, random_number: u32) {
@@ -50,6 +56,27 @@ fn generate_workout(intensity: u32, random_number: u32) {
                 "Today, run for {} minutes!",
                 expensive_result.value(intensity)
             );
+        }
+    }
+}
+
+struct Counter {
+    count: u32,
+}
+
+impl Counter {
+    fn new() -> Counter {
+        Counter { count: 0 }
+    }
+}
+
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.count < 5 {
+            true => Some(self.count + 1),
+            false => Some(self.count),
         }
     }
 }
