@@ -75,9 +75,18 @@ impl Iterator for Counter {
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.count < 5 {
-            true => Some(self.count + 1),
-            false => Some(self.count),
+            true => {
+                self.count = self.count+1;
+                Some(self.count + 1)
+            }
+            false => None,
         }
+    }
+}
+
+impl std::fmt::Display for Counter {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.count)
     }
 }
 
@@ -87,4 +96,8 @@ fn main() {
     println!("Value from cahcer: {:?}", c.value(4));
 
     generate_workout(24, 20);
+
+    let c = Counter::new();
+    let c = c.into_iter().filter(|x| x % 2 == 0).sum::<u32>();
+    println!("{}", c);
 }
