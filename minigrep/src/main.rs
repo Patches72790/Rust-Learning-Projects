@@ -10,7 +10,7 @@ fn main() {
         process::exit(1);
     });
 
-    println!("Searching for {} in file {}", config.query, config.filename);
+    println!("Searching for {} in file {}:", config.query, config.filename);
 
     if let Err(err) = run(config) {
         eprintln!("There was a problem reading the file: {}", err);
