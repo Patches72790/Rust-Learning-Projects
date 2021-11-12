@@ -1,5 +1,9 @@
 use crate::List::{Cons, Nil};
+use smart_pointers::MultiList;
+use std::mem::drop;
 use std::ops::Deref;
+use std::rc::Rc;
+use std::sync::Semaphore;
 
 #[derive(Debug)]
 enum List {
@@ -24,6 +28,17 @@ impl<T> Deref for MyBox<T> {
     }
 }
 
+#[derive(Debug)]
+struct MySmartPointer {
+    thing: String,
+}
+
+impl Drop for MySmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping my box now: {}", self.thing)
+    }
+}
+
 fn hello(name: &str) {
     println!("Hello, {}!", name);
 }
@@ -39,4 +54,25 @@ fn main() {
     let bs = MyBox::new(String::from("Wilson"));
     hello(&bs); // with deref coercion, deref is called as many times as needed
     hello(&(*bs)[..]); // crazy version with dereferencing and slice-making
+
+    // DROP TRAIT CUSTOM
+    let myp = MySmartPointer {
+        thing: String::from("Stuff"),
+    };
+
+    drop(&myp);
+    println!("{:?}", myp);
+
+    let ml = Rc::new(MultiList::Cons(
+        5,
+        Rc::new(MultiList::Cons(10, Rc::new(MultiList::Nil))),
+    ));
+
+    println!("Ref count of ml: {}", Rc::strong_count(&ml));
+
+    // use Rc clone to increase ref count of multi list
+    let ml1 = MultiList::Cons(3, Rc::clone(&ml));
+    println!("Ref count of ml: {}", Rc::strong_count(&ml));
+    let ml2 = MultiList::Cons(4, Rc::clone(&ml));
+    println!("Ref count of ml: {}", Rc::strong_count(&ml));
 }
