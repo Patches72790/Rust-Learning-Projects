@@ -1,9 +1,9 @@
 use crate::List::{Cons, Nil};
+use smart_pointers::LinkedList;
 use smart_pointers::MultiList;
 use std::mem::drop;
 use std::ops::Deref;
 use std::rc::Rc;
-use std::sync::Semaphore;
 
 #[derive(Debug)]
 enum List {
@@ -75,4 +75,9 @@ fn main() {
     println!("Ref count of ml: {}", Rc::strong_count(&ml));
     let ml2 = MultiList::Cons(4, Rc::clone(&ml));
     println!("Ref count of ml: {}", Rc::strong_count(&ml));
+
+    let mut l = LinkedList::new(42);
+    l.push(5);
+    l.push(6);
+    println!("My list: {}", l);
 }
