@@ -34,6 +34,18 @@ pub mod linked_list_stuff {
             }
         }
 
+        pub fn length(&self) -> usize {
+            let mut len = 0;
+            let mut current = &self.head;
+
+            while let Some(node) = &current {
+                len = len + 1;
+                current = &node.next;
+            }
+
+            len
+        }
+
         pub fn push(&mut self, data: T) {
             let new_node = LinkedNode {
                 data,
@@ -59,15 +71,7 @@ pub mod linked_list_stuff {
         T: std::fmt::Display,
     {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            let mut str_list = String::from("[");
-
-            for node in self.head.as_ref() {
-                let n = String::from(node.data.to_string()) + ",";
-                &str_list.push_str(&n);
-            }
-
-            &str_list.push(']');
-            write!(f, "{}", str_list)
+            write!(f, "{}", self)
         }
     }
 }
@@ -76,15 +80,25 @@ pub mod linked_list_stuff {
 pub mod tests {
     use crate::linked_list_stuff::*;
     #[test]
-    fn test_new_linked_list() {
+    fn test_pop_from_linked_list() {
         let mut l = LinkedList::new(5);
+        l.push(6);
+        l.push(7);
+        let first = &l.pop().unwrap();
+        let second = &l.pop().unwrap();
+        let third = &l.pop().unwrap();
+
+        assert_eq!(*first, 7);
+        assert_eq!(*second, 6);
+        assert_eq!(*third, 5);
     }
 
     #[test]
-    fn test_list_string() {
-        let l = LinkedList::new(42);
-        let ls = l.to_string();
+    fn test_push_to_list() {
+        let mut l = LinkedList::new(5);
+        l.push(6);
+        l.push(7);
 
-        println!("{}", ls);
+        assert_eq!(l.length(), 3);
     }
 }
