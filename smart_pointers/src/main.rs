@@ -1,6 +1,7 @@
 use crate::List::{Cons, Nil};
 use smart_pointers::LinkedList;
 use smart_pointers::MultiList;
+use smart_pointers::*;
 use std::mem::drop;
 use std::ops::Deref;
 use std::rc::Rc;
@@ -80,4 +81,7 @@ fn main() {
     l.push(5);
     l.push(6);
     println!("My list: {}", l);
+
+    tree_node_stuff();
+    test_my_tree();
 }
