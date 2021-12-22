@@ -17,7 +17,9 @@ pub mod gui_stuff {
     }
 
     impl Draw for Button {
-        fn draw(&self) {}
+        fn draw(&self) {
+            println!("My label: {}", self.label);
+        }
     }
 
     pub struct SelectBox {
@@ -27,7 +29,12 @@ pub mod gui_stuff {
     }
 
     impl Draw for SelectBox {
-        fn draw(&self) {}
+        fn draw(&self) {
+            println!("My options:");
+            for opt in &self.options {
+                println!("\t{}", opt);
+            }
+        }
     }
 
     pub struct Screen {
