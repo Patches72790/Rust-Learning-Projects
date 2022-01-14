@@ -6,7 +6,7 @@ use std::net::TcpListener;
 use std::net::TcpStream;
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -37,10 +37,6 @@ fn handle_connection(mut stream: TcpStream) {
         let favicon = File::open("./public/favicon.ico").unwrap();
         let icon_dir = ico::IconDir::read(favicon).unwrap();
 
-        for entry in icon_dir.entries() {
-            println!("{}x{}", entry.width(), entry.height());
-        }
-
         let image = icon_dir.entries()[0].decode().unwrap();
         let image = image.rgba_data();
 
@@ -53,6 +49,16 @@ fn handle_connection(mut stream: TcpStream) {
         stream.write(response.as_bytes()).unwrap();
         stream.flush().unwrap();
     } else {
-        println!("Unknown request!");
+        let contents = fs::read_to_string("./public/404.html").expect("Error reading HTML file!");
+
+        let response = format!(
+            "HTTP/1.1 404 NOT FOUND\r\nContent-Length: {}\r\n\r\n{}",
+            contents.len(),
+            contents
+        );
+        stream
+            .write(response.as_bytes())
+            .expect("Error writing response stream!");
+        stream.flush().expect("Error flushing stream!");
     }
 }
