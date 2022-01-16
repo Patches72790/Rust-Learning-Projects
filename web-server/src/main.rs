@@ -16,6 +16,7 @@ fn main() {
         let stream = stream.unwrap();
 
         pool.execute(move || handle_connection(&stream));
+        //handle_connection(&stream);
     }
 }
 
