@@ -24,21 +24,6 @@ pub fn shared_memory() {
     println!("Result: {}", *counter.lock().unwrap());
 }
 
-pub fn thread_vector() {
-    let my_closure = move |n: i32| {
-        for j in 0..10 {
-            println!("thread {} at j {}", n, j);
-            thread::sleep(Duration::from_millis(1));
-        }
-    };
-
-    for i in 0..5 {
-        thread::spawn(move || my_closure(i));
-    }
-
-    thread::sleep(Duration::from_secs(2));
-}
-
 pub fn message_passing() {
     let (tx, rx) = mpsc::channel();
     let cv = Arc::new(Condvar::new());

@@ -3,7 +3,7 @@ fn borrow_a_string(s: &str) {
 }
 
 fn own_a_string(moved_str: String) {
-    println!("Now I owwwwwn this string!!! {}", moved_str);
+    println!("Now I owwwwwn this string!!! {moved_str}");
 }
 
 fn add_some_stuff_to_a_string(s: &mut String, stuff: &str) {
