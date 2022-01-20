@@ -9,14 +9,17 @@ use std::time::Duration;
 use web_server::ThreadPool;
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
+    let host = "127.0.0.1";
+    let port = 8080;
+    let listener = TcpListener::bind(format!("{}:{}", host, port))
+        .expect("Unable to bind to port with Tcp listener!");
     let pool = ThreadPool::new(4);
 
+    println!("Listening on host {} @ {}", host, port);
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
         pool.execute(move || handle_connection(&stream));
-        //handle_connection(&stream);
     }
 }
 
