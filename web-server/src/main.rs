@@ -16,11 +16,13 @@ fn main() {
     let pool = ThreadPool::new(4);
 
     println!("Listening on host {} @ {}", host, port);
-    for stream in listener.incoming() {
+    for stream in listener.incoming().take(2) {
         let stream = stream.unwrap();
 
         pool.execute(move || handle_connection(&stream));
     }
+
+    println!("Shutting down server!");
 }
 
 fn handle_connection(mut stream: &TcpStream) {

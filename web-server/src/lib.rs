@@ -4,30 +4,64 @@ use std::thread::JoinHandle;
 
 type Job = Box<dyn FnOnce() + Send + 'static>;
 
+enum Message {
+    NewJob(Job),
+    Terminate,
+}
+
 struct Worker {
     id: usize,
-    thread: JoinHandle<Job>,
+    thread: Option<JoinHandle<()>>,
 }
 
 impl Worker {
-    pub fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    pub fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Message>>>) -> Worker {
         let thread = thread::spawn(move || loop {
-            let job = receiver
+            let message = receiver
                 .lock()
-                .expect("Error acquiring lock for worker receiver")
+                .expect("Error grabbing lock in Worker")
                 .recv()
-                .expect("Error receiving job in worker");
-            println!("Worker {} got a job; executing.", id);
-            job();
+                .expect("Error receiving message in worker!");
+
+            match message {
+                Message::NewJob(job) => {
+                    println!("Worker {} got a job; executing...", id);
+                    job();
+                }
+                Message::Terminate => {
+                    println!("Worker {} was told to terminate", id);
+                    break;
+                }
+            }
         });
 
-        Worker { id, thread }
+        Worker {
+            id,
+            thread: Some(thread),
+        }
     }
 }
 
 pub struct ThreadPool {
     threads: Vec<Worker>,
-    sender: mpsc::Sender<Job>,
+    sender: mpsc::Sender<Message>,
+}
+
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+        println!("Sending terminate message to all workers.");
+        for _ in &self.threads {
+            self.sender.send(Message::Terminate).unwrap();
+        }
+
+        for worker in &mut self.threads {
+            println!("Shutting down worker {}", worker.id);
+
+            if let Some(thread) = worker.thread.take() {
+                thread.join().unwrap();
+            }
+        }
+    }
 }
 
 impl ThreadPool {
@@ -53,7 +87,7 @@ impl ThreadPool {
         let job = Box::new(f);
 
         self.sender
-            .send(job)
+            .send(Message::NewJob(job))
             .expect("Error sending job in thread executor");
     }
 }
