@@ -5,6 +5,9 @@ pub struct Semaphore {
     counter: Mutex<isize>,
 }
 
+unsafe impl std::marker::Sync for Semaphore {}
+unsafe impl std::marker::Send for Semaphore {}
+
 impl Semaphore {
     pub fn new(state: isize) -> Semaphore {
         Semaphore {

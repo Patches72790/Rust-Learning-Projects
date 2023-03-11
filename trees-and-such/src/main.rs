@@ -9,8 +9,9 @@ where
     V: Debug + std::cmp::Ord,
 {
     value: V,
-    left: Option<Rc<RefCell<AVLTree<V>>>>,
-    right: Option<Rc<RefCell<AVLTree<V>>>>,
+    //left: Option<RefCell<Rc<AVLTree<V>>>>,
+    left: Option<Box<AVLTree<V>>>,
+    right: Option<Box<AVLTree<V>>>, //right: Option<RefCell<Rc<AVLTree<V>>>>,
 }
 
 impl<V> AVLTree<V>
@@ -28,12 +29,12 @@ where
     /// This returns the in order traversal of the items of this tree
     pub fn items(&self) -> Vec<V> {
         let left_items = match &self.left.as_ref() {
-            Some(t) => t.borrow().items(),
+            Some(t) => t.items(),
             None => vec![],
         };
         let this_item = self.value.clone();
         let right_items = match &self.right.as_ref() {
-            Some(t) => t.borrow().items(),
+            Some(t) => t.items(),
             None => vec![],
         };
 
@@ -47,11 +48,11 @@ where
 
     pub fn height(&self) -> usize {
         let l = match &self.left {
-            Some(v) => v.try_borrow().ok().unwrap().height(),
+            Some(v) => v.height(),
             None => 0,
         };
         let r = match &self.right {
-            Some(v) => v.try_borrow().ok().unwrap().height(),
+            Some(v) => v.height(),
             None => 0,
         };
 
@@ -72,16 +73,20 @@ where
 
     pub fn insert(&mut self, value: V) {
         match value.cmp(&self.value) {
-            std::cmp::Ordering::Less => match &self.left {
-                Some(v) => v.borrow_mut().insert(value),
-                None => self.left = Some(Rc::new(RefCell::new(AVLTree::new(value)))),
+            std::cmp::Ordering::Less => match &mut self.left {
+                Some(v) => v.insert(value),
+                None => self.left = Some(Box::new(AVLTree::new(value))),
             },
-            std::cmp::Ordering::Greater => match &self.right {
-                Some(v) => v.borrow_mut().insert(value),
-                None => self.right = Some(Rc::new(RefCell::new(AVLTree::new(value)))),
+            std::cmp::Ordering::Greater => match &mut self.right {
+                Some(v) => v.insert(value),
+                None => self.right = Some(Box::new(AVLTree::new(value))),
             },
             _ => self.value = value,
         }
+    }
+
+    pub fn delete(&mut self, value: V) -> Option<V> {
+        todo!()
     }
 }
 
@@ -117,6 +122,7 @@ mod tests {
         println!("{}", t.height());
         println!("{:?}", t.items());
 
-        panic!();
+        assert_eq!(t.height(), 4);
+        assert_eq!(t.items(), vec!["A", "B", "C", "D"]);
     }
 }
