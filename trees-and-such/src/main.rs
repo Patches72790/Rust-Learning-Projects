@@ -11,6 +11,26 @@ where
     right: Option<Box<AVLTree<V>>>,
 }
 
+struct AVLTreeIterator<V>
+where
+    V: Debug + std::cmp::Ord,
+{
+    items: Vec<V>,
+    current: usize,
+    tree: AVLTree<V>,
+}
+
+impl<V> Iterator for AVLTreeIterator<V>
+where
+    V: Debug + std::cmp::Ord,
+{
+    type Item = V;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
+}
+
 impl<V> AVLTree<V>
 where
     V: Debug + std::cmp::Ord + Clone,
