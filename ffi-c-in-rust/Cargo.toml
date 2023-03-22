@@ -1,5 +1,5 @@
 [package]
-name = "ffi-stuff"
+name = "ffi-c-in-rust"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,7 +9,3 @@ edition = "2021"
 
 [build-dependencies]
 cc = "1.0"
-
-[lib]
-name = "ffi_stuff"
-crate-type = ["cdylib"]
