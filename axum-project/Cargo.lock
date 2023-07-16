@@ -91,6 +91,7 @@ dependencies = [
  "dotenv",
  "hyper",
  "serde",
+ "serde_json",
  "tokio",
  "tower",
  "tower-http",
