@@ -1,4 +1,4 @@
-use hyper::{body::Body, Request, StatusCode};
+use hyper::{body::Body, HeaderMap, Request, StatusCode};
 use serde::Serialize;
 use std::{net::SocketAddr, time::Duration};
 use tower_http::trace::{DefaultOnResponse, TraceLayer};
@@ -26,9 +26,9 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(root))
-        .route("/stuff", get(stuff))
         .route("/env", get(env))
         .route("/slow/:sleep_time", get(slow))
+        .route("/headers", get(headers))
         .layer(
             TraceLayer::new_for_http()
                 .on_request(|request: &Request<Body>, _span: &Span| {
@@ -62,15 +62,20 @@ async fn slow(Path(sleep_time): Path<usize>) -> String {
     format!("Slept {} seconds", (1000 * sleep_time) as u64)
 }
 
-async fn stuff() -> (StatusCode, Json<Stuff>) {
-    let stuff = Stuff {
-        things: "thingy-things".to_string(),
-    };
+async fn headers(headers: HeaderMap) -> (StatusCode, Json<Vec<Header>>) {
+    let h = headers
+        .iter()
+        .map(|(key, value)| Header {
+            key: key.to_string(),
+            value: value.to_str().expect("Error extracting string").to_string(),
+        })
+        .collect::<Vec<Header>>();
 
-    (StatusCode::OK, Json(stuff))
+    (StatusCode::OK, Json(h))
 }
 
 #[derive(Serialize)]
-struct Stuff {
-    things: String,
+struct Header {
+    key: String,
+    value: String,
 }
