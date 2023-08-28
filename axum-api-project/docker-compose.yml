@@ -1,0 +1,15 @@
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
