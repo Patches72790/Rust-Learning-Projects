@@ -1,3 +1,3 @@
-pub mod limiter;
+mod limiter;
 
 pub use limiter::RateLimiter;
