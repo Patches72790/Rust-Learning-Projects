@@ -1,3 +1,8 @@
+use std::{
+    pin::Pin,
+    task::{Context, Poll},
+};
+
 use axum::BoxError;
 use futures_core::{ready, Future};
 use pin_project::pin_project;
@@ -17,11 +22,8 @@ where
 {
     type Output = Result<Response, BoxError>;
 
-    fn poll(
-        self: std::pin::Pin<&mut Self>,
-        cx: &mut std::task::Context<'_>,
-    ) -> std::task::Poll<Self::Output> {
-        std::task::Poll::Ready(ready!(self
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        Poll::Ready(ready!(self
             .project()
             .response_future
             .poll(cx)

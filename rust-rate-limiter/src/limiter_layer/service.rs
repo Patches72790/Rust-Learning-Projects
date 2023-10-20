@@ -71,6 +71,7 @@ where
                 *bucket -= 1;
             } else {
                 return Poll::Ready(Err(Box::new(RateLimitError(()))));
+                //return Poll::Pending;
             }
         }
 
@@ -88,6 +89,19 @@ where
         ResponseFuture {
             response_future: future,
             _permit: permit,
+        }
+    }
+}
+
+impl<T: Clone> Clone for RateLimit<T> {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+            rate: self.rate,
+            last_refresh: self.last_refresh.clone(),
+            bucket: self.bucket.clone(),
+            permit_semaphore: self.permit_semaphore.clone(),
+            permit: None,
         }
     }
 }

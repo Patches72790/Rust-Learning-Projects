@@ -1,6 +1,7 @@
 use std::time::{Duration, SystemTime};
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct RateLimiter {
     bucket: usize,
     last_sent: SystemTime,
@@ -17,6 +18,7 @@ impl Default for RateLimiter {
     }
 }
 
+#[allow(dead_code)]
 impl RateLimiter {
     pub fn new(bucket: usize, interval: usize) -> RateLimiter {
         assert!(interval > 0);
@@ -40,3 +42,17 @@ impl RateLimiter {
         }
     }
 }
+
+//pub async fn rate_limited_middlware_fn<T>(
+//    State(state): State<Arc<RwLock<AppState>>>,
+//    request: Request<T>,
+//    next: Next<T>,
+//) -> Result<Response, &'static str> {
+//    while !state.write().await.limiter.can_process_request() {
+//        tracing::info!("Sleeping for rate limiter...");
+//        let _ = sleep(Duration::from_secs(3)).await;
+//    }
+//    let response = next.run(request).await;
+//
+//    Ok(response)
+//}
