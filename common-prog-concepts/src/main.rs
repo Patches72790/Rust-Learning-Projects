@@ -12,17 +12,16 @@ fn scalar_types() {
     println!("Isize: {}", x);
     println!("Byte: {}", byte);
     println!("Too big, so overflow! {}", x.wrapping_add(1)); // compile with --release flag to allow for wrapping
-    
+
     // use checked or wrapping methods to carefully watch for overflow
     match y.checked_add(1) {
         None => println!("Overflow!"),
-        Some(_) => println!("Success: {}", y)
+        Some(_) => println!("Success: {}", y),
     }
 
     // overflowing methods
     let z_overflowed = z.overflowing_add(1);
     println!("Z overflowed ? {:?}", z_overflowed);
-
 }
 
 fn char_types() -> char {
@@ -41,7 +40,6 @@ fn redeclaration() {
     let spaces = spaces.len();
 
     println!("Spaces: {}", spaces);
-
 }
 
 fn compound_types() {
@@ -73,11 +71,8 @@ fn prevent_invalid_access() {
     io::stdin()
         .read_line(&mut index)
         .expect("Failed to read line");
-    
-    let index: usize = index
-        .trim()
-        .parse()
-        .expect("Not a number");
+
+    let index: usize = index.trim().parse().expect("Not a number");
 
     let element = a[index];
 
@@ -96,4 +91,3 @@ fn array_types() {
     let a3 = [0; 5];
     println!("Here is an array initialized to 0: {:?}", a3);
 }
-

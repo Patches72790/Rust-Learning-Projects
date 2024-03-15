@@ -1,4 +1,3 @@
-use ico;
 use std::fs;
 use std::fs::File;
 use std::io::prelude::*;
@@ -26,8 +25,8 @@ fn main() {
 }
 
 fn handle_connection(mut stream: &TcpStream) {
-    let mut buffer = [0; 1024];
-    stream.read(&mut buffer).unwrap();
+    let mut buffer = vec![];
+    stream.read_to_end(&mut buffer).unwrap();
 
     let get_request = b"GET / HTTP/1.1\r\n";
     let get_favicon = b"GET /favicon.ico HTTP/1.1\r\n";
@@ -42,7 +41,7 @@ fn handle_connection(mut stream: &TcpStream) {
             contents
         );
 
-        stream.write(response.as_bytes()).unwrap();
+        stream.write_all(response.as_bytes()).unwrap();
         stream.flush().unwrap();
     } else if buffer.starts_with(get_favicon) {
         let favicon = File::open("./public/favicon.ico").unwrap();
@@ -57,16 +56,14 @@ fn handle_connection(mut stream: &TcpStream) {
             image,
         );
 
-        stream.write(response.as_bytes()).unwrap();
+        stream.write_all(response.as_bytes()).unwrap();
         stream.flush().unwrap();
     } else if buffer.starts_with(get_sleep) {
         thread::sleep(Duration::from_secs(10));
 
-        let response = format!("HTTP/1.1 200 OK\r\n");
+        let response = "HTTP/1.1 200 OK\r\n".as_bytes();
 
-        stream
-            .write(response.as_bytes())
-            .expect("Error writing response");
+        stream.write_all(response).expect("Error writing response");
         stream.flush().unwrap();
     } else {
         let contents = fs::read_to_string("./public/404.html").expect("Error reading HTML file!");
@@ -77,7 +74,7 @@ fn handle_connection(mut stream: &TcpStream) {
             contents
         );
         stream
-            .write(response.as_bytes())
+            .write_all(response.as_bytes())
             .expect("Error writing response stream!");
         stream.flush().expect("Error flushing stream!");
     }
