@@ -1,0 +1,16 @@
+<html>
+  <body>
+    <button id="click">Click me</button>
+  </body>
+  <script>
+    (() => {
+      const button = document.getElementById("click");
+      const socket = new WebSocket("ws://localhost:8080/ws");
+      socket.addEventListener("open", (e) => {
+        console.log("Connected to web socket", e);
+      });
+
+      button.addEventListener("click", () => socket.send("hello"));
+    })();
+  </script>
+</html>
